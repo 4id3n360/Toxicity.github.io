@@ -33,6 +33,17 @@
         a.button:hover {
             background-color: rgb(185, 182, 182);
         }
+
+        /* Flexbox container to display links side by side */
+        .links-container {
+            display: flex;
+            justify-content: center; /* Center the links horizontally */
+        }
+        
+        /* Add margin between the elements inside the flexbox container */
+        .links-container h4, .links-container h5 {
+            margin: 10px;
+        }
     </style>
 </head>
 <body>
@@ -48,10 +59,11 @@
         </h6>
         <br><br>
         <!-- Add the 'button' class to style the links as buttons -->
-        <div>
-        <h4><a href="/gameassets/MVCraft.html" class="button">MVCraft 1.5.2</a></h4>
-        <h5><a href="/gameassets/MVBETA.html" class="button">MVCraft Beta 3</a></h5>
-        <h5><a href="/gameassets/MVCraft Multiplayer.html" class="button">MVCraft Multiplayer</a></h5>
+        <!-- Wrap the links in a container with flexbox properties -->
+        <div class="links-container">
+            <h4><a href="/gameassets/MVCraft.html" class="button">MVCraft 1.5.2</a></h4>
+            <h5><a href="/gameassets/MVBETA.html" class="button">MVCraft Beta 3</a></h5>
+            <h5><a href="/gameassets/MVCraft Multiplayer.html" class="button">MVCraft Multiplayer</a></h5>
         </div>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     </center>
