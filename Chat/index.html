@@ -37,12 +37,12 @@
         
         function updateUserChatLog(message) {
             var chatLog = document.getElementById('chat-log');
-            chatLog.innerHTML += '<div class="user-message">' + message + '</div>';
+            chatLog.innerHTML += '<div class="user-message">You: ' + message + '</div>';
         }
         
         function updateBotChatLog(message) {
             var chatLog = document.getElementById('chat-log');
-            chatLog.innerHTML += '<div class="bot-message">' + message + '</div>';
+            chatLog.innerHTML += '<div class="bot-message">Bot: ' + message + '</div>';
         }
     </script>
 </body>
