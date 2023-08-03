@@ -17,7 +17,7 @@ def send_message():
 
     # Encode the user's message and generate a response
     input_ids = tokenizer.encode(user_message, return_tensors='pt')
-    output = model.generate(input_ids, max_length=100, num_return_sequences=1, pad_token_id=tokenizer.eos_token_id)
+    output = model.generate(input_ids, max_length=100, num_return_sequences=1, pad_token_id=tokenizer.eos_token_id, temperature=0.7)
     bot_response = tokenizer.decode(output[0], skip_special_tokens=True)
 
     return jsonify({'bot_response': bot_response})
