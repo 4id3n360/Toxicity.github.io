@@ -1,26 +1,24 @@
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
-from flask import Flask, render_template, request, jsonify
+#imports
+from flask import Flask, render_template, request
+from chatterbot import ChatBot
+from chatterbot.trainers import ChatterBotCorpusTrainer
 
 app = Flask(__name__)
+#create chatbot
+englishBot = ChatBot("Chatterbot", storage_adapter="chatterbot.storage.SQLStorageAdapter")
+trainer = ChatterBotCorpusTrainer(englishBot)
+trainer.train("chatterbot.corpus.english") #train the chatter bot for english
 
-# Load the model and tokenizer
-model = GPT2LMHeadModel.from_pretrained("facebook/opt-350m")
-tokenizer = GPT2Tokenizer.from_pretrained("facebook/opt-350m")
+#define app routes
+@app.route("/")
+def index():
+    return render_template("index.html")
 
-@app.route('/')
-def home():
-    return render_template('index.html')
+@app.route("/get")
+#function for the bot response
+def get_bot_response():
+    userText = request.args.get('msg')
+    return str(englishBot.get_response(userText))
 
-@app.route('/send_message', methods=['POST'])
-def send_message():
-    user_message = request.form['user_message']
-
-    # Encode the user message and generate a response
-    input_ids = tokenizer.encode(user_message, return_tensors='pt')
-    output = model.generate(input_ids, max_length=100, num_return_sequences=1, pad_token_id=tokenizer.eos_token_id, temperature=0.7)
-    bot_response = tokenizer.decode(output[0], skip_special_tokens=True)
-
-    return jsonify({'bot_response': bot_response})
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run()
