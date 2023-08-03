@@ -7,43 +7,33 @@
     <h1>Chatbot</h1>
     <div id="chat-container">
         <div id="chat-log"></div>
-        <input type="text" id="user-input" placeholder="Type your message..." />
+        <input type="text" id="user-input" placeholder="Type your message here">
         <button onclick="sendMessage()">Send</button>
     </div>
 
     <script>
-        function appendMessage(userMessage, botMessage) {
-            var chatLog = document.getElementById('chat-log');
-            var userDiv = document.createElement('div');
-            userDiv.className = 'user-message';
-            userDiv.innerHTML = '<strong>You:</strong> ' + userMessage;
-            chatLog.appendChild(userDiv);
-
-            var botDiv = document.createElement('div');
-            botDiv.className = 'bot-message';
-            botDiv.innerHTML = '<strong>Chatbot:</strong> ' + botMessage;
-            chatLog.appendChild(botDiv);
+        function displayBotResponse(response) {
+            const chatLog = document.getElementById('chat-log');
+            chatLog.innerHTML += '<div><strong>You:</strong> ' + response.user + '</div>';
+            chatLog.innerHTML += '<div><strong>Bot:</strong> ' + response.bot + '</div>';
+            chatLog.scrollTop = chatLog.scrollHeight;
         }
 
         function sendMessage() {
-            var userMessage = document.getElementById('user-input').value;
-            appendMessage(userMessage, '...');
-            document.getElementById('user-input').value = '';
+            const userInput = document.getElementById('user-input').value;
+            if (userInput.trim() !== '') {
+                document.getElementById('user-input').value = '';
 
-            // Send user message to server
-            fetch('/send_message', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: 'user_message=' + userMessage
-            })
-            .then(response => response.json())
-            .then(data => {
-                var botMessage = data.bot_response;
-                document.getElementById('chat-log').removeChild(document.querySelector('.bot-message'));
-                appendMessage('', botMessage);
-            });
+                fetch('/send_message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'user_message=' + encodeURIComponent(userInput),
+                })
+                .then((response) => response.json())
+                .then((data) => displayBotResponse(data));
+            }
         }
     </script>
 </body>
