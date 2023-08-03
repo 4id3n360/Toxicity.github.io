@@ -1,48 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chatbot Demo</title>
+    <title>Chatbot</title>
 </head>
 <body>
-    <h1>Welcome to the Chatbot</h1>
-    <div id="chat-log">
-        <!-- The chat log will be updated here -->
+    <h1>Chatbot</h1>
+    <div id="chat-container">
+        <div id="chat-log"></div>
+        <input type="text" id="user-input" placeholder="Type your message..." />
+        <button onclick="sendMessage()">Send</button>
     </div>
-    <input type="text" id="user-input" placeholder="Type your message here...">
-    <button onclick="sendMessage()">Send</button>
-    
+
     <script>
+        function appendMessage(userMessage, botMessage) {
+            var chatLog = document.getElementById('chat-log');
+            var userDiv = document.createElement('div');
+            userDiv.className = 'user-message';
+            userDiv.innerHTML = '<strong>You:</strong> ' + userMessage;
+            chatLog.appendChild(userDiv);
+
+            var botDiv = document.createElement('div');
+            botDiv.className = 'bot-message';
+            botDiv.innerHTML = '<strong>Chatbot:</strong> ' + botMessage;
+            chatLog.appendChild(botDiv);
+        }
+
         function sendMessage() {
-            var userInput = document.getElementById('user-input').value;
-            updateUserChatLog(userInput);
+            var userMessage = document.getElementById('user-input').value;
+            appendMessage(userMessage, '...');
             document.getElementById('user-input').value = '';
-            
-            // Send the user's message to the server
+
+            // Send user message to server
             fetch('/send_message', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: 'user_message=' + encodeURIComponent(userInput)
+                body: 'user_message=' + userMessage
             })
             .then(response => response.json())
             .then(data => {
-                var botResponse = data.bot_response;
-                updateBotChatLog(botResponse);
-            })
-            .catch(error => {
-                console.error('Error:', error);
+                var botMessage = data.bot_response;
+                document.getElementById('chat-log').removeChild(document.querySelector('.bot-message'));
+                appendMessage('', botMessage);
             });
-        }
-        
-        function updateUserChatLog(message) {
-            var chatLog = document.getElementById('chat-log');
-            chatLog.innerHTML += '<div class="user-message">You: ' + message + '</div>';
-        }
-        
-        function updateBotChatLog(message) {
-            var chatLog = document.getElementById('chat-log');
-            chatLog.innerHTML += '<div class="bot-message">Bot: ' + message + '</div>';
         }
     </script>
 </body>
