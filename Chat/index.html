@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatbot Demo</title>
+</head>
+<body>
+    <h1>Welcome to the Chatbot</h1>
+    <div id="chat-log">
+        <!-- The chat log will be updated here -->
+    </div>
+    <input type="text" id="user-input" placeholder="Type your message here...">
+    <button onclick="sendMessage()">Send</button>
+    
+    <script>
+        function sendMessage() {
+            var userInput = document.getElementById('user-input').value;
+            updateUserChatLog(userInput);
+            document.getElementById('user-input').value = '';
+            
+            // Send the user's message to the server
+            fetch('/send_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'user_message=' + encodeURIComponent(userInput)
+            })
+            .then(response => response.json())
+            .then(data => {
+                var botResponse = data.bot_response;
+                updateBotChatLog(botResponse);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        
+        function updateUserChatLog(message) {
+            var chatLog = document.getElementById('chat-log');
+            chatLog.innerHTML += '<div class="user-message">' + message + '</div>';
+        }
+        
+        function updateBotChatLog(message) {
+            var chatLog = document.getElementById('chat-log');
+            chatLog.innerHTML += '<div class="bot-message">' + message + '</div>';
+        }
+    </script>
+</body>
+</html>
